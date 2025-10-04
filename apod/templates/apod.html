@@ -1,0 +1,63 @@
+<!-- apod/templates/apod.html -->
+  {% extends 'base.html' %}
+  {% block title %}APOD{% endblock %}
+
+  {% block styles %}
+  .apod .meta { color: #bfc6d1; font-size: .9rem; }
+  .apod .controls { margin-top: .75rem; display: flex; align-items: center; gap: .5rem; }
+  .apod .media { margin-top: 1rem; }
+  .apod img { max-width: 100%; height: auto; border-radius: 8px; }
+  .apod .video iframe { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 8px; }
+  .apod .hd { margin-top: .5rem; }
+  .apod .explanation { margin-top: 1rem; white-space: pre-wrap; }
+  .apod .alert { margin-top: .75rem; padding: .75rem; border: 1px solid rgba(255,255,255,.2); border-radius: 6px; background: rgba(255,0,0,.12); color: #ffd7d7; }
+  {% endblock %}
+
+  {% block content %}
+  <section class="apod">
+    <h1>{{ title or "Astronomy Picture of the Day" }}</h1>
+
+    {% if errors and errors|length %}
+    <div class="alert" role="status">
+      {% for m in errors %}<div>{{ m }}</div>{% endfor %}
+    </div>
+    {% endif %}
+
+    <form class="controls" method="get" action="{{ url_for('apod.apod') }}">
+      <label for="apod-date">Pick date:</label>
+      <input
+        type="date"
+        id="apod-date"
+        name="date"
+        value="{{ request.args.get('date', date) }}"
+        max="{{ max_date }}"
+      />
+      <button type="submit">Load</button>
+    </form>
+
+    {% if date %}<div class="meta">Date: {{ date }}</div>{% endif %}
+    {% if copyright %}
+      <div class="meta">© {{ copyright|trim }}</div>
+    {% endif %}
+
+    <div class="media">
+      {% if media_type == "image" and url %}
+        <img src="{{ url }}" alt="{{ title or 'APOD' }}">
+        {% if hdurl %}
+          <div class="hd"><a href="{{ hdurl }}" target="_blank" rel="noopener">View HD image</a></div>
+        {% endif %}
+      {% elif media_type == "video" and url %}
+        <div class="video">
+          <iframe src="{{ url }}" allowfullscreen loading="lazy" title="{{ title or 'APOD' }}"></iframe>
+        </div>
+        <div class="hd"><a href="{{ url }}" target="_blank" rel="noopener">Open content</a></div>
+      {% elif url %}
+        <a href="{{ url }}" target="_blank" rel="noopener">Open content</a>
+      {% else %}
+        <div class="meta">No media available.</div>
+      {% endif %}
+    </div>
+
+    {% if explanation %}<div class="explanation">{{ explanation }}</div>{% endif %}
+  </section>
+  {% endblock %}

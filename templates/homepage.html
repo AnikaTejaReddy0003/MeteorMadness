@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Meteor Madness{% endblock %}
+{% block head %}
+    <style>
+        /* Place your CSS from index1.html here (excluding header/nav styles) */
+        /* ... */
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+            }
+        }
+    </script>
+{% endblock %}
+{% block content %}
+    <div class="stars"></div>
+    <div class="stars2"></div>
+    <div class="stars3"></div>
+    <form class="search-container" id="search-form">
+        <span class="search-icon">🔍</span>
+        <div class="search-bar-content">
+            <input type="text" class="search-input" id="search-input" placeholder="Search for an asteroid...">
+        </div>
+    </form>
+    <div class="container">
+        <div class="info">
+            <h3>YOUR DESTINATION</h3>
+            <h1>EARTH</h1>
+            <p>
+                Earth is the only planet in the solar system whose English
+                name does not come from Greek or Roman mythology.
+                The name was taken from Old English and Germanic.
+                It simply means "the ground".
+            </p>
+            <div class="stats">
+                <div class="stat">
+                    <h3>AVG. DISTANCE FROM SUN</h3>
+                    <p>149.6 MIL. KM</p>
+                </div>
+                <div class="stat">
+                    <h3>EST. TRAVEL TIME</h3>
+                    <p>19 YEARS (by plane)</p>
+                </div>
+            </div>
+        </div>
+        <div id="canvas-container"></div>
+    </div>
+    <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
+    <script>
+        const searchForm = document.getElementById('search-form');
+        const searchInput = document.getElementById('search-input');
+        searchForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const query = searchInput.value;
+            if (query) {
+                window.location.href = `details.html?query=${encodeURIComponent(query)}`;
+            }
+        });
+    </script>
+{% endblock %}
