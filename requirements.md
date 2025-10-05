@@ -26,7 +26,11 @@ To get a local copy up and running, follow these steps.
 
 4.  **Activate the Virtual Environment**
     * **On Windows:**
-        ```sh
+      ```sh
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+      ```
+
+      ```sh
         .\venv\Scripts\Activate
         ```
     * **On macOS/Linux:**
