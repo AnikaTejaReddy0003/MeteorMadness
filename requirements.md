@@ -1,5 +1,3 @@
-* TO RUN THE WEBSITE INSTALL THE DEPENDENCIES
-
 ## Setup and Installation
 
 To get a local copy up and running, follow these steps.
