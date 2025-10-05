@@ -1,1 +1,541 @@
-demo
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Asteroid Impact Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #fff;
+            overflow: hidden;
+            cursor: none;
+        }
+
+        .custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00d4ff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10000;
+            transition: transform 0.1s ease;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: #00d4ff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0;
+            animation: trail-fade 0.5s ease-out;
+        }
+
+        @keyframes trail-fade {
+            0% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0); }
+        }
+
+        .presentation {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #00d4ff, #ff00ea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        h2 {
+            font-size: 2.8rem;
+            margin-bottom: 40px;
+            color: #00d4ff;
+        }
+
+        h3 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #ff00ea;
+        }
+
+        p, li {
+            font-size: 1.4rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        li:before {
+            content: "▸ ";
+            color: #00d4ff;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.8rem;
+            color: #b0b0b0;
+            margin-top: -20px;
+            margin-bottom: 40px;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #00d4ff;
+            color: #00d4ff;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        button:hover {
+            background: #00d4ff;
+            color: #0f0c29;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            font-size: 1.2rem;
+            color: #b0b0b0;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            margin-top: 30px;
+        }
+
+        .highlight-box {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .tech-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .tech-item {
+            background: rgba(255, 0, 234, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #ff00ea;
+            font-size: 1.1rem;
+        }
+
+        .stars {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.5);
+            animation: shoot 3s linear infinite;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(300px) translateY(300px);
+                opacity: 0;
+            }
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-30px) translateX(20px); }
+        }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.2;
+            animation: pulse 8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.2); opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-cursor" id="cursor"></div>
+    <div class="stars" id="stars"></div>
+    
+    <div class="presentation">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>Interactive Asteroid Impact Simulator</h1>
+            <p class="subtitle">A Web-Based Visualization and Simulation Tool</p>
+            <p style="font-size: 1.6rem; margin-top: 50px;">Using real data to model asteroid impact scenarios, predict consequences, and evaluate mitigation strategies</p>
+        </div>
+
+        <!-- Slide 2: Problem Statement -->
+        <div class="slide">
+            <h2>The Problem</h2>
+            <div class="highlight-box">
+                <h3>The Asteroid Threat</h3>
+                <p>Near-Earth asteroids pose ongoing risks - impacts could cause tsunamis, seismic events, and atmospheric changes with catastrophic global damage.</p>
+            </div>
+            <h3 style="margin-top: 40px;">Critical Gaps in Current Solutions</h3>
+            <ul>
+                <li><strong>Siloed Datasets:</strong> NASA NEO and USGS data are disconnected, hindering holistic impact analysis</li>
+                <li><strong>Lack of User-Friendly Tools:</strong> Either too technical for public/policymakers or too simplistic for scientific analysis</li>
+                <li><strong>Limited Consequence Modeling:</strong> Tools focus on orbital tracking but fall short on ground-level impact simulation and mitigation strategies</li>
+            </ul>
+        </div>
+
+        <!-- Slide 3: Our Solution -->
+        <div class="slide">
+            <h2>Our Solution</h2>
+            <p style="font-size: 1.6rem; margin-bottom: 30px;">Flask-based web application integrating NASA APIs for comprehensive asteroid data access</p>
+            <div class="two-column">
+                <div>
+                    <h3>APOD Viewer</h3>
+                    <ul>
+                        <li>Daily astronomy picture display</li>
+                        <li>Historical browsing capability</li>
+                        <li>HD image/video support</li>
+                        <li>Detailed metadata</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>NEO Browser</h3>
+                    <ul>
+                        <li>Paginated object listings</li>
+                        <li>Size, velocity, distance data</li>
+                        <li>Hazard classification</li>
+                        <li>Efficient local caching</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Technology & Architecture -->
+        <div class="slide">
+            <h2>Technology Stack & Architecture</h2>
+            <div class="two-column">
+                <div>
+                    <h3>Technologies</h3>
+                    <div class="tech-stack">
+                        <span class="tech-item">Python/Flask</span>
+                        <span class="tech-item">HTML/Jinja2</span>
+                        <span class="tech-item">CSS/JavaScript</span>
+                        <span class="tech-item">NASA APIs</span>
+                    </div>
+                </div>
+                <div>
+                    <h3>Key Design Features</h3>
+                    <ul>
+                        <li>Modular architecture</li>
+                        <li>Singleton pattern for data</li>
+                        <li>Template-based rendering</li>
+                        <li>Efficient JSON caching</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="highlight-box" style="margin-top: 30px;">
+                <p><strong>Data Sources:</strong> NASA APOD API • NASA NeoWs API • Local asteroids.json cache</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Related Tools Analysis -->
+        <div class="slide">
+            <h2>Comparative Analysis</h2>
+            <div class="two-column">
+                <div>
+                    <h3>Asteroid Launcher</h3>
+                    <ul>
+                        <li>Interactive impact simulator</li>
+                        <li>Customizable parameters (type, size, speed, angle)</li>
+                        <li>Global targeting system</li>
+                        <li>Consequence analysis: craters, fireballs, shockwaves, earthquakes</li>
+                        <li>Statistical damage reporting</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>NASA Eyes on Asteroids</h3>
+                    <ul>
+                        <li>Real-time 3D visualization</li>
+                        <li>Actual orbital tracking of thousands of NEOs</li>
+                        <li>Detailed object profiles and characteristics</li>
+                        <li>Potentially Hazardous Asteroid filtering</li>
+                        <li>Upcoming close approach dashboard</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Key Features & Impact -->
+        <div class="slide">
+            <h2>Features & Impact</h2>
+            <div class="highlight-box">
+                <h3>Key Features</h3>
+                <ul>
+                    <li>Real-time NASA API integration with efficient data caching</li>
+                    <li>User-friendly interface bridging technical data and public understanding</li>
+                    <li>Historical data browsing and detailed asteroid characteristics</li>
+                    <li>Potentially hazardous object identification and responsive design</li>
+                </ul>
+            </div>
+            <div class="highlight-box">
+                <h3>Project Impact</h3>
+                <ul>
+                    <li>Bridges gap between complex datasets and accessible tools</li>
+                    <li>Supports public education, awareness, and preparedness</li>
+                    <li>Enables better decision-making for policymakers</li>
+                    <li>Foundation for future impact modeling and mitigation evaluation</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Slide 7: Thank You -->
+        <div class="slide">
+            <h1>Thank You</h1>
+            <p class="subtitle">Questions?</p>
+            <div style="margin-top: 80px;">
+                <p style="font-size: 1.6rem;">Interactive Asteroid Impact Simulator</p>
+                <p style="font-size: 1.3rem; color: #b0b0b0; margin-top: 20px;">Making asteroid data accessible for everyone</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide-number" id="slideNumber">1 / 7</div>
+    
+    <div class="navigation">
+        <button id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const starsContainer = document.getElementById('stars');
+
+        // Custom cursor
+        const cursor = document.getElementById('cursor');
+        let mouseX = 0, mouseY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            cursor.style.left = mouseX - 10 + 'px';
+            cursor.style.top = mouseY - 10 + 'px';
+
+            // Create trail effect
+            if (Math.random() > 0.7) {
+                const trail = document.createElement('div');
+                trail.className = 'cursor-trail';
+                trail.style.left = mouseX + 'px';
+                trail.style.top = mouseY + 'px';
+                document.body.appendChild(trail);
+                setTimeout(() => trail.remove(), 500);
+            }
+        });
+
+        // Create stars with varying sizes
+        for (let i = 0; i < 150; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const size = Math.random() * 3 + 1;
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            starsContainer.appendChild(star);
+        }
+
+        // Create shooting stars
+        function createShootingStar() {
+            const shootingStar = document.createElement('div');
+            shootingStar.className = 'shooting-star';
+            shootingStar.style.left = Math.random() * 100 + '%';
+            shootingStar.style.top = Math.random() * 50 + '%';
+            shootingStar.style.animationDuration = (Math.random() * 2 + 2) + 's';
+            starsContainer.appendChild(shootingStar);
+            
+            setTimeout(() => shootingStar.remove(), 3000);
+        }
+
+        setInterval(createShootingStar, 3000);
+
+        // Create planets
+        const planetColors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#f9ca24'];
+        for (let i = 0; i < 3; i++) {
+            const planet = document.createElement('div');
+            planet.className = 'planet';
+            const size = Math.random() * 100 + 50;
+            planet.style.width = size + 'px';
+            planet.style.height = size + 'px';
+            planet.style.left = Math.random() * 80 + 10 + '%';
+            planet.style.top = Math.random() * 80 + 10 + '%';
+            planet.style.background = planetColors[i];
+            planet.style.animationDelay = i * 2 + 's';
+            planet.style.animationDuration = (15 + i * 5) + 's';
+            starsContainer.appendChild(planet);
+        }
+
+        // Create nebula effects
+        const nebulas = [
+            { color: 'rgba(138, 43, 226, 0.3)', size: 300 },
+            { color: 'rgba(0, 212, 255, 0.3)', size: 400 },
+            { color: 'rgba(255, 0, 234, 0.3)', size: 350 }
+        ];
+
+        nebulas.forEach((nebula, i) => {
+            const nebulaEl = document.createElement('div');
+            nebulaEl.className = 'nebula';
+            nebulaEl.style.width = nebula.size + 'px';
+            nebulaEl.style.height = nebula.size + 'px';
+            nebulaEl.style.background = nebula.color;
+            nebulaEl.style.left = (i * 33) + '%';
+            nebulaEl.style.top = (i * 25) + '%';
+            nebulaEl.style.animationDelay = i + 's';
+            starsContainer.appendChild(nebulaEl);
+        });
+
+        // Mouse parallax effect on stars
+        document.addEventListener('mousemove', (e) => {
+            const stars = document.querySelectorAll('.star');
+            const moveX = (e.clientX / window.innerWidth - 0.5) * 20;
+            const moveY = (e.clientY / window.innerHeight - 0.5) * 20;
+            
+            stars.forEach((star, index) => {
+                const speed = (index % 3 + 1) * 0.5;
+                star.style.transform = `translate(${moveX * speed}px, ${moveY * speed}px)`;
+            });
+        });
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            updateNavigation();
+        }
+
+        function changeSlide(direction) {
+            showSlide(currentSlide + direction);
+        }
+
+        function updateNavigation() {
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${totalSlides}`;
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+        });
+
+        updateNavigation();
+    </script>
+</body>
+</html>
