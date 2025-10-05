@@ -43,7 +43,45 @@ The application is divided into two main sections:
 * NASA APOD API
 * Local 'asteroids ison file (used by the running application)
 
-
+ -----------------------------------------------------------
+## Project Structure
+ 
+ 
+```
+├── app.py
+├── requirements.txt
+├── .gitignore
+├── apod/
+│   ├── __init__.py
+│   ├── apod.py
+│   ├── apod_query.py
+│   └── templates/
+│       └── apod.html
+├── neows/
+│   ├── __init__.py
+│   ├── asteroid_loader.py
+│   ├── asteroids.json
+│   ├── fetch_neows_all.py
+│   ├── neows.py
+│   ├── neows_query.py
+│   ├── neowsdata.json
+│   ├── process_neows_data.py
+│   └── templates/
+│       └── neows.html
+├── static/
+│   ├── favicon.png
+│   └── css/
+│       ├── apod.css
+│       └── neows.css
+└── templates/
+   ├── about.html
+   ├── base.html
+   └── homepage.html
+ 
+```
+ 
+*FOLLOW THE NSTRUCTIONS GIVEN HERE: [requirements.txt](https://github.com/AnikaTejaReddy0003/MeteorMadness/blob/d9f621911e38afa9e3357e3c362c71765bdfe086/requirements.md)*
+(for the setup and the installation)
 
 
 
