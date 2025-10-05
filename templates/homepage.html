@@ -1,62 +1,131 @@
 {% extends 'base.html' %}
-{% block title %}Meteor Madness{% endblock %}
-{% block head %}
+{% block content %}
     <style>
-        /* Place your CSS from index1.html here (excluding header/nav styles) */
-        /* ... */
-    </style>
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .app-title {
+            text-align: center;
+            color: #fff;
+            font-size: 2.5rem;
+            margin-top: 2rem;
+            letter-spacing: 2px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 3rem;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .info-section {
+            color: #e0e0e0;
+            max-width: 400px;
+            font-size: 1.15rem;
+            line-height: 1.7;
+        }
+
+        .info-section h2 {
+            color: #fff;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        #globe-canvas {
+            width: 380px;
+            height: 380px;
+            max-width: 90vw;
+            max-height: 90vw;
+            display: block;
+            background: #10131a;
+            border-radius: 50%;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+                gap: 2rem;
+            }
+
+            .info-section {
+                text-align: center;
             }
         }
-    </script>
-{% endblock %}
-{% block content %}
-    <div class="stars"></div>
-    <div class="stars2"></div>
-    <div class="stars3"></div>
-    <form class="search-container" id="search-form">
-        <span class="search-icon">🔍</span>
-        <div class="search-bar-content">
-            <input type="text" class="search-input" id="search-input" placeholder="Search for an asteroid...">
-        </div>
-    </form>
-    <div class="container">
-        <div class="info">
-            <h3>YOUR DESTINATION</h3>
-            <h1>EARTH</h1>
+    </style>
+    <div class="app-title">Meteor Madness</div>
+    <div class="main-content">
+        <div class="info-section">
+            <h2>About the App</h2>
             <p>
-                Earth is the only planet in the solar system whose English
-                name does not come from Greek or Roman mythology.
-                The name was taken from Old English and Germanic.
-                It simply means "the ground".
+                Meteor Madness is an interactive web application that lets you explore meteor impacts across the globe
+                in a stunning 3D environment.<br><br>
+                Discover fascinating facts about meteorites, visualize their locations, and learn about their history
+                and significance.<br><br>
+                Dive into real-time data, interact with the globe, and experience the wonders of our universe from your
+                browser.
             </p>
-            <div class="stats">
-                <div class="stat">
-                    <h3>AVG. DISTANCE FROM SUN</h3>
-                    <p>149.6 MIL. KM</p>
-                </div>
-                <div class="stat">
-                    <h3>EST. TRAVEL TIME</h3>
-                    <p>19 YEARS (by plane)</p>
-                </div>
-            </div>
         </div>
-        <div id="canvas-container"></div>
+        <canvas id="globe-canvas" width="380" height="380"></canvas>
     </div>
-    <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
+    <script src="https://webglfundamentals.org/webgl/lessons/resources/three.min.js"></script>
     <script>
-        const searchForm = document.getElementById('search-form');
-        const searchInput = document.getElementById('search-input');
-        searchForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const query = searchInput.value;
-            if (query) {
-                window.location.href = `details.html?query=${encodeURIComponent(query)}`;
+        var camera, scene, renderer, mesh;
+
+        function init() {
+            var canvas = document.getElementById("globe-canvas");
+            renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
+            renderer.setClearColor(0x000000, 0);
+
+            camera = new THREE.PerspectiveCamera(70, canvas.width / canvas.height, 1, 100);
+            camera.position.z = 25;
+
+            scene = new THREE.Scene();
+
+            var geometry = new THREE.SphereGeometry(10, 100, 100);
+            var material = new THREE.MeshPhongMaterial();
+            THREE.ImageUtils.crossOrigin = '';
+            material.map = THREE.ImageUtils.loadTexture('http://s3-us-west-2.amazonaws.com/s.cdpn.io/1206469/earthmap1k.jpg');
+            mesh = new THREE.Mesh(geometry, material);
+            mesh.rotation.x += 0.5;
+            scene.add(mesh);
+
+            var light1 = new THREE.AmbientLight(0xffffff, 0.8);
+            scene.add(light1);
+
+            var light2 = new THREE.PointLight(0xffffff, 0.6);
+            light2.position.set(50, 50, 50);
+            scene.add(light2);
+        }
+
+        function resize() {
+            var canvas = renderer.domElement;
+            var width = canvas.clientWidth;
+            var height = canvas.clientHeight;
+            if (canvas.width !== width || canvas.height !== height) {
+                renderer.setSize(width, height, false);
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
             }
-        });
+        }
+
+        function animate() {
+            resize();
+            mesh.rotation.y += 0.005;
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
     </script>
 {% endblock %}
