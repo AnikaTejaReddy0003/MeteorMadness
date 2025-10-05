@@ -133,11 +133,11 @@
             <li><a href="{{ url_for('index') }}" class="{{ 'active' if current=='home' else '' }}">Home</a></li>
             <li><a href="{{ url_for('apod.apod') }}" class="{{ 'active' if current=='apod' else '' }}">Picture of the
                 Day</a></li>
-            <li><a href="{{ url_for('neows.list_asteroids') }}" class="{{ 'active' if current=='asteroids' else '' }}">Asteroids</a></li>
-            <li><a href="#" class="{{ 'active' if current=='story' else '' }}">Story</a></li>
-            <li><a href="#" class="{{ 'active' if current=='impact' else '' }}">Impact</a></li>
-            <li><a href="#" class="{{ 'active' if current=='precautions' else '' }}">Precautions</a></li>
-            <li><a href="#" class="{{ 'active' if current=='map' else '' }}">Map</a></li>
+            <li><a href="{{ url_for('neows.list_asteroids') }}" class="{{ 'active' if current=='asteroids' else '' }}">Asteroids</a>
+            </li>
+            <li><a href="https://images.nasa.gov/" target="_blank">Images</a></li>
+            <li><a href="https://neal.fun/asteroid-launcher/" target="_blank">Impact Predictor</a></li>
+            <li><a href="{{ url_for('about') }}">About</a></li>
         </ul>
     </nav>
 

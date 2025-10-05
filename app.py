@@ -22,6 +22,10 @@ app.register_blueprint(apod_bp)  # Add this line
 def index():
     return render_template('homepage.html')
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
