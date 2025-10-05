@@ -10,9 +10,9 @@ To get a local copy up and running, follow these steps.
 
 ### Instructions
 
-1.  **Clone the Repository**
+1.  **Clone the Repository(in the TERMINAL)**
     ```sh
-    git clone [https://github.com/AnikaTejaReddy0003/MeteorMadness](https://github.com/AnikaTejaReddy0003/MeteorMadness)
+    git clone https://github.com/AnikaTejaReddy0003/MeteorMadness
     ```
 
 2.  **Navigate into the Directory**
