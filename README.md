@@ -1,7 +1,26 @@
 ## METEOR MADNESS
 _______________________________________________________________________________
 
-
+# Our Solution
+This is a web application built with Flask that serves data from two NASA APIs: Astronomy Picture of the Day (APOD) and Near-Earth Object Web Services (NeoWs).
+## Features
+The application is divided into two main sections:
+1. **Astronomy Picture of the Day (APOD) Viewer**
+* Fetches and displays the picture or video from NASA's APOD API for the current day by default.
+* Includes a date picker that allows users to browse and view historical APOD entries.
+* Supports both image and video media types, providing links to high-definition versions when available.
+* Displays metadata such as the title, date, copyright, and a detailed explanation for each entry.
+2. **Near-Earth Object (NEO) Browser**
+* Displays a paginated list of Near-Earth Objects from a local data cache.
+* Data is loaded efficiently on application startup from a local 'asteroids.ison' file using a singleton pattern to ensure fast access and minimal memory usage.
+* The 'asteroids.ison' file contains detailed information for each object, including its name, size, velocity, closest approach distance, and whether it is potentially hazardous.
+## Technology Stack
+* **Backend**: Python, Flask
+* **Frontend**: HTML (Jinja2 Templates), CSS, JavaScript
+* **External Libraries**: requests' (for making API calls)
+* **Data Sources**:
+* NASA APOD API
+* Local 'asteroids ison file (used by the running application)
 
 
 
