@@ -1,23 +1,27 @@
 from flask import Flask, render_template
-from apod.apod import apod_bp
-import datetime
+from neows.asteroid_loader import asteroid_data
+from neows.neows import neows_bp
+from apod.apod import apod_bp  # Add this import
+
+app = Flask(__name__)
 
 
-def create_app() -> Flask:
-    app = Flask(__name__, template_folder='templates')
-    app.register_blueprint(apod_bp)
+# Load data once when the app starts
+def load_asteroid_data():
+    asteroid_data.load_data("neows/asteroids.json")
 
-    @app.context_processor
-    def inject_globals():
-        return {'current_year': datetime.datetime.now().year}
 
-    @app.route('/')
-    def index():
-        return render_template('homepage.html')
+load_asteroid_data()
 
-    return app
+# Register blueprints
+app.register_blueprint(neows_bp)
+app.register_blueprint(apod_bp)  # Add this line
+
+
+@app.route('/')
+def index():
+    return render_template('homepage.html')
 
 
 if __name__ == '__main__':
-    app = create_app()
     app.run(debug=True)

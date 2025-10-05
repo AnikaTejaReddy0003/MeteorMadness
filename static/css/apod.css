@@ -1,0 +1,9 @@
+    .apod .meta { color: #bfc6d1; font-size: .9rem; }
+    .apod .controls { margin-top: .75rem; display: flex; align-items: center; gap: .5rem; }
+    .apod .media { margin-top: 1rem; }
+    .apod img { max-width: 100%; height: auto; border-radius: 8px; }
+    .apod .video iframe { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 8px; }
+    .apod .hd { margin-top: .5rem; }
+    .apod .explanation { margin-top: 1rem; white-space: pre-wrap; }
+    .apod .alert { margin-top: .75rem; padding: .75rem; border: 1px solid rgba(255,255,255,.2); border-radius: 6px;
+    background: rgba(255,0,0,.12); color: #ffd7d7; }

@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Asteroids{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/neows.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid py-5 neows-container">
+        <div class="container">
+            <!-- Header Section -->
+            <div class="neows-header">
+                <h1 class="neows-title">
+                    <i class="bi bi-asterisk"></i> Near-Earth Asteroids
+                </h1>
+                <div class="neows-stats">
+                    <div class="badge neows-badge">
+                        <i class="bi bi-database"></i> Total: {{ total }} Asteroids
+                    </div>
+                    <div class="badge neows-badge">
+                        <i class="bi bi-file-text"></i> Page {{ page }} of {{ total_pages }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dark Table -->
+            <div class="table-responsive neows-table-wrapper">
+                <table class="table table-dark table-hover neows-table">
+                    <thead>
+                    <tr>
+                        <th>
+                            <i class="bi bi-hash"></i> ID
+                        </th>
+                        <th>
+                            <i class="bi bi-moon-stars"></i> Name
+                        </th>
+                        <th>
+                            <i class="bi bi-rulers"></i> Size (km)
+                        </th>
+                        <th>
+                            <i class="bi bi-speedometer2"></i> Velocity (km/s)
+                        </th>
+                        <th>
+                            <i class="bi bi-compass"></i> Closest Approach (km)
+                        </th>
+                        <th>
+                            <i class="bi bi-calendar-event"></i> Year
+                        </th>
+                        <th>
+                            <i class="bi bi-shield-check"></i> Status
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for asteroid in asteroids %}
+                        <tr>
+                            <td class="cell-id">{{ asteroid.id }}</td>
+                            <td class="cell-name">{{ asteroid.name_limited }}</td>
+                            <td class="cell-size">{{ "%.3f"|format(asteroid.size_km) }}</td>
+                            <td class="cell-velocity">
+                                {% if asteroid.velocity_km_s %}
+                                    {{ "%.3f"|format(asteroid.velocity_km_s) }}
+                                {% else %}
+                                    <span class="cell-na">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td class="cell-distance">
+                                {% if asteroid.closest_approach_km %}
+                                    {{ "%.0f"|format(asteroid.closest_approach_km) }}
+                                {% else %}
+                                    <span class="cell-na">N/A</span>
+                                {% endif %}
+                            </td>
+                            <td class="cell-year">{{ asteroid.year }}</td>
+                            <td>
+                                {% if asteroid.hazardous %}
+                                    <span class="badge status-badge status-hazardous">
+                                                            <i class="bi bi-exclamation-triangle-fill"></i> Hazardous
+                                                        </span>
+                                {% else %}
+                                    <span class="badge status-badge status-safe">
+                                                            <i class="bi bi-check-circle-fill"></i> Safe
+                                                        </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Enhanced Dark Pagination -->
+            <nav aria-label="Asteroid pagination">
+                <ul class="neows-pagination">
+                    <!-- Previous Button -->
+                    <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+                        <a class="page-link page-link-pill"
+                           href="{{ url_for('neows.list_asteroids', page=(page - 1)) }}">
+                            <i class="bi bi-chevron-left"></i> Previous
+                        </a>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    {% for p in range(1, total_pages + 1) %}
+                        {% if p == page %}
+                            <li class="page-item active">
+                                <span class="page-link page-link-circle">{{ p }}</span>
+                            </li>
+                        {% elif p <= 3 or p > total_pages - 3 or (p >= page - 2 and p <= page + 2) %}
+                            <li class="page-item">
+                                <a class="page-link page-link-circle"
+                                   href="{{ url_for('neows.list_asteroids', page=p) }}">
+                                    {{ p }}
+                                </a>
+                            </li>
+                        {% elif p == 4 or p == total_pages - 3 %}
+                            <li class="page-item">
+                                <span class="page-link page-link-circle page-ellipsis">...</span>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Next Button -->
+                    <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+                        <a class="page-link page-link-pill"
+                           href="{{ url_for('neows.list_asteroids', page=(page + 1)) }}">
+                            Next <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}
