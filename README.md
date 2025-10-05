@@ -1,6 +1,27 @@
 ## METEOR MADNESS
 _______________________________________________________________________________
 
+# Project: Interactive Asteroid Impact Simulator
+ 
+**A web-based interactive visualization and simulation tool that uses real data to help users model asteroid impact scenarios, predict their consequences, and evaluate potential mitigation strategies.**
+
+
+## About The Project
+
+### The Challenge
+
+The discovery of near-Earth asteroids like the fictional "Impactor-2025" highlights the ongoing risk of celestial objects colliding with our planet. While rare, such impacts could cause widespread devastation, including tsunamis, seismic events, and atmospheric changes, leading to catastrophic damage on a global scale.
+
+Valuable data exists to help us understand these threats. NASA’s Near-Earth Object (NEO) program tracks thousands of asteroids, providing crucial data on their characteristics (size, velocity, orbit) via APIs. Similarly, the U.S. Geological Survey (USGS) offers extensive environmental and geological datasets (topography, population density, tsunami zones) critical for modeling impact effects.
+
+However, a significant gap exists:
+* **Siloed Datasets:** These critical datasets are often disconnected, making it difficult to generate a holistic view of an impact scenario.
+* **Lack of User-Friendly Tools:** Existing tools are often too technical for the public and policymakers or too simplistic for meaningful scientific analysis.
+* **Limited Consequence Modeling:** Most tools focus on orbital tracking but fall short in simulating the complex, ground-level consequences of an impact or evaluating the effectiveness of mitigation strategies like asteroid deflection.
+
+This gap hinders public understanding, preparedness efforts, and effective decision-making.
+
+
 # Our Solution
 This is a web application built with Flask that serves data from two NASA APIs: Astronomy Picture of the Day (APOD) and Near-Earth Object Web Services (NeoWs).
 ## Features
