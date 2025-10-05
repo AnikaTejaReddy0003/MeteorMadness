@@ -103,4 +103,4 @@ NASA's Eyes on Asteroids is an official, real-time 3D visualization application 
 
 * **Scientific and Public Outreach**: Serves as a scientifically accurate tool for public outreach, helping to educate users about NASA's ongoing mission to track and study NEOs.
 
-You can find the ppt of explaination and vedio of the demonstration
+You can find the [POWERPOINT PRESENTATION](https://github.com/AnikaTejaReddy0003/MeteorMadness/blob/f8d39c3ce9fd7df1cdd09c0f37505f63ac554c42/demo/demo.html) of explaination and [VIDEO](https://github.com/AnikaTejaReddy0003/MeteorMadness/blob/dbcc2bfe0ca7d2b20b39b05e38da6b0770811088/demo/demo.mp4) of the demonstration
