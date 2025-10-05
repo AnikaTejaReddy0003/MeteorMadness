@@ -39,7 +39,7 @@ The Asteroid Launcher is an interactive, web-based simulator designed to model t
 
 
 ## 2. NASA's Eyes on Asteroids  
-**[EYES ON ASTEROID](https://eyes.nasa.gov/apps/asteroids/#/home)
+**[EYES ON ASTEROID](https://eyes.nasa.gov/apps/asteroids/#/home)**
 
 ### Overview
 
